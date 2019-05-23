@@ -1,0 +1,18 @@
+%% Determine the magnitude of the reaction force at B.
+%%
+L = 5; % m
+E = 235; % GPa
+Iz = 0.000054; % m^4
+w = 7; % kN/m
+syms x RA C1
+%% for 0<x<L/2
+%%
+V1=-w*x+RA;
+M1=int(V1,x);
+y12=M1/E/Iz;
+y11=int(y12,x)+C1;
+y1=int(y11,x);
+%% Solve for RA and C1%%
+%%
+[C1 RA] = vpasolve(subs(y1,x,L/2)==0,subs(y11,x,L/2)==0)
+RB = w*L-2*RA
