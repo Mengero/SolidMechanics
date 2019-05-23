@@ -1,0 +1,33 @@
+%% HW 11.1
+%% Determine the magnitude of the reaction force at end C. 
+%% Determine the magnitude of the reaction moment at end C.
+%%
+L = 8; % m
+E = 235; % GPa
+Iz = 0.000045; % m^4
+w = 6; % kN/m
+syms x RA MA
+%% for 0<x<L/2
+%%
+V1=-w*x+RA;
+M1=int(V1,x)+MA;
+y12=M1/E/Iz;
+y11=int(y12,x);
+y1=int(y11,x);
+%% for L/2<x<L
+%%
+V2=RA-w*L/2;
+M2=int(V2,x);
+M2=M2-subs(M2,x,L/2)+subs(M1,x,L/2);
+y22=M2/E/Iz;
+y21=int(y22);
+y21=y21-subs(y21,x,L/2)+subs(y11,x,L/2);
+y2=int(y21);
+y2=y2-subs(y2,x,L/2)+subs(y1,x,L/2);
+%% Solve for MA and RA
+%%
+[MA,RA]=vpasolve(subs(y2,x,L)==0,subs(y21,x,L)==0);
+%% Calculate RC and MC
+%%
+RC=w*L/2-RA
+MC=MA+RA*L-w*L/2*3/4*L
