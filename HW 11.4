@@ -1,0 +1,37 @@
+%% HW 11.4
+%% Determine the cable tension T.
+%%
+L = 8; % m
+H = 4; % m
+E = 160; % GPa
+Iz = 41000000; % mm^4
+w = 7; % kN/m
+A = 204; % mm^2
+%% Change Unit
+E = E*10^9;
+Iz = Iz*10^-12;
+w = w*10^3;
+A = A*10^-6;
+%%
+syms x RA MA;
+%% for 0<x<L/2
+%%
+V1=-w*x+RA;
+M1=int(V1,x)+MA;
+y12=M1/E/Iz;
+y11=int(y12,x);
+y1=int(y11,x);
+%% for L/2<x<L
+%%
+V2=RA-w*L/2;
+M2=int(V2,x);
+M2=M2-subs(M2,x,L/2)+subs(M1,x,L/2);
+y22=M2/E/Iz;
+y21=int(y22);
+y21=y21-subs(y21,x,L/2)+subs(y11,x,L/2);
+y2=int(y21);
+y2=y2-subs(y2,x,L/2)+subs(y1,x,L/2);
+%% solve the RA and MA
+%%
+[MA RA] = vpasolve(subs(y2,x,L)==-(w*L/2-RA)/E/A,MA + RA*L - w*L/2*3/4*L==0)
+T = (w*L/2-RA)*10^-3
